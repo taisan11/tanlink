@@ -1,8 +1,3 @@
 ```
-npm install
-npm run dev
-```
-
-```
-npm run deploy
+deno run --allow-net hello.ts
 ```
