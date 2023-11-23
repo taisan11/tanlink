@@ -1,7 +1,15 @@
-import { Hono } from 'https://deno.land/x/hono@v3.10.2/mod.ts'
+/// <reference lib="deno.unstable" />
+import { Hono } from "https://deno.land/x/hono@v3.10.2/mod.ts";
+import { customAlphabet } from "npm:nanoid@3.1.16";
 
-const app = new Hono()
+const app = new Hono();
+// const kv = await Deno.openKv("kv.sqlite");
 
-app.get('/', (c) => c.text('Hello Hono!'))
+const nanoid = customAlphabet(
+  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  7,
+);
 
-Deno.serve(app.fetch)
+app.get("/", (c) => c.text(nanoid()));
+
+Deno.serve(app.fetch);
