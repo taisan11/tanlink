@@ -2,7 +2,6 @@
 /// <reference lib="deno.unstable" />
 import { Hono } from "https://deno.land/x/hono@v3.10.2/mod.ts";
 import { customAlphabet } from "npm:nanoid@3.1.16";
-import { serveStatic } from 'https://deno.land/x/hono/middleware.ts'
 
 const app = new Hono();
 const kv = await Deno.openKv();
@@ -27,19 +26,16 @@ function urlcheck(string: string) {
 }
 
 app.get("/", async (c) => {
-  const url = c.req.query('url');
-  if (!url) return await serveStatic({ path: './index.html' });
+  const url: string = c.req.query('url');
+  if (!url) return c.text("URLがないよ\n例:https://tanlink.deno.dev/?url=https://example.com\n製作者:https://github.com/taisan11");
   if (!urlcheck(url)) return c.text("URLじゃないよ");
   const { key } = await shorten(url);
   return c.text(key);
 });
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
-  const result = await kv.get([id]);
-  if (!result) {
-    return c.text("結果がありません");
-  }
-  return c.json({ [id]: result });
+  const aredayo = kv.get([id])
+  return c.json({ [aredayo.key]: aredayo.value });
 });
 
 Deno.serve(app.fetch);
