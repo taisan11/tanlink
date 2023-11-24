@@ -35,7 +35,7 @@ app.get("/tan/:url", async (c) => {
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
   const aredayo = kv.get([id])
-  return c.json({ result.key: result.value })
+  return c.json({ [result.key]: result.value });
 });
 
 Deno.serve(app.fetch);
