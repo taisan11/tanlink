@@ -16,15 +16,26 @@ async function shorten(url: string) {
   await kv.set([key], url);
   return { key };
 }
+//urlcheck
+function urlcheck(string: string) {
+  try {
+    new URL(string); return true; 
+  } catch (err) { 
+    return false; 
+  }
+}
 
 app.get("/", (c) => c.text(nanoid()));
 app.get("/tan/:url", async (c) => {
   const url = c.req.param("url");
+  if (!urlcheck(url)) return c.text("URLじゃないよ");
   const { key } = await shorten(url);
   return c.text(key);
 });
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
+  const aredayo = kv.get([id])
+  return c.json({ result.key: result.value })
 });
 
 Deno.serve(app.fetch);
