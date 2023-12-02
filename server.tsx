@@ -62,8 +62,7 @@ app.get("/:id", async (c) => {
 });
 app.get(
   "/onclick.js",
-  serveStatic("./onclick.js"),
-  cache({ cacheName: "onclick-js", cacheControl: "max-age=2592000", wait: true }),
+  serveStatic("./onclick.js")
 );
 
 Deno.serve(app.fetch);
