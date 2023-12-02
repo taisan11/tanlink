@@ -4,7 +4,7 @@
 /// <reference lib="deno.unstable" />
 import { Hono } from "https://deno.land/x/hono@v3.10.2/mod.ts";
 import { customAlphabet } from "npm:nanoid@3.1.16";
-import { logger,compress,html,jsx } from "https://deno.land/x/hono@v3.10.2/middleware.ts"
+import { logger,compress,html,jsx,serveStatic } from "https://deno.land/x/hono@v3.10.2/middleware.ts"
 
 const app = new Hono();
 const kv = await Deno.openKv();
@@ -60,5 +60,10 @@ app.get("/:id", async (c) => {
   return c.redirect(aredayo.value);
   // return c.text(aredayo.value);
 });
+app.get(
+  "/onclick.js",
+  serveStatic("./onclick.js"),
+  cache({ cacheName: "onclick-js", cacheControl: "max-age=2592000", wait: true }),
+);
 
 Deno.serve(app.fetch);
