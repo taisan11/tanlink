@@ -36,7 +36,7 @@ app.get("/", async (c) => {
 });
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
-  const aredayo = kv.get([id])
+  const aredayo = await kv.get([id])
   return c.text(aredayo.value);
 });
 
