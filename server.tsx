@@ -48,15 +48,9 @@ app.get("/", async (c) => {
     <Layout title="たんLink">
       <h1>たんLink</h1>
       <p>短縮URL</p>
-      <a href={`https://tanlink.deno.dev/${key}`}>{`https://tanlink.deno.dev/${key}`}</a>
-      <button onClick={copyToClipboard}>Copy URL</button>
-      <script>
-        const copyToClipboard = () => {
-        const copyTarget = document.getElementById("copyTarget");
-        copyTarget.select();
-        document.execCommand("Copy");
-        };
-      </script>
+      <a href={`https://tanlink.deno.dev/${key}`} id="a">{`https://tanlink.deno.dev/${key}`}</a>
+      <button onclick="copyToClipboard()">Copy text</button>
+      <script src="./onclick.js"></script>
     </Layout>
   );
 });
