@@ -1,5 +1,5 @@
 {
   "tasks": {
-    "run": "deno run -A --unstable-hmr --unstable server.ts"
+    "run": "deno run -A --unstable-hmr --unstable server.tsx"
   }
 }
