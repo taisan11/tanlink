@@ -93,7 +93,7 @@ app.get("/", async (c) => {
 app.get('/auth',async (c) => {
   const url: string = c.req.query("url");
   const key: string = c.req.query("key");
-  await kv.set(key, url);
+  await kv.set([key], url);
   return c.render(
     <div>
       <h1>たんLink</h1>
