@@ -90,12 +90,6 @@ app.get("/", async (c) => {
     </div>,
   );
 });
-app.get("/:id", async (c) => {
-  const id = c.req.param("id");
-  const aredayo = await kv.get([id]);
-  return c.redirect(aredayo.value);
-  // return c.text(aredayo.value);
-});
 app.get('/auth',async (c) => {
   const url: string = c.req.query("url");
   const key: string = c.req.query("key");
@@ -109,4 +103,10 @@ app.get('/auth',async (c) => {
       </a>
     </div>  )
 })
+app.get("/:id", async (c) => {
+  const id = c.req.param("id");
+  const aredayo = await kv.get([id]);
+  return c.redirect(aredayo.value);
+  // return c.text(aredayo.value);
+});
 Deno.serve(app.fetch);
