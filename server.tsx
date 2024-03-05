@@ -9,7 +9,8 @@ import {
   jsx,
   logger,
   serveStatic,
-} from "https://deno.land/x/hono@v4.0.7/middleware.ts";
+  secureHeaders ,
+} from "https://deno.land/x/hono@v3.10.2/middleware.ts";
 
 const app = new Hono();
 const kv = await Deno.openKv();
@@ -34,6 +35,7 @@ function urlcheck(string: string) {
   }
 }
 
+app.use('*', secureHeaders())
 app.use("*", compress({ encoding: "gzip" }));
 app.use("*", logger());
 app.use(async (c, next) => {
@@ -59,7 +61,10 @@ app.get("/", async (c) => {
         <h1>たんLink</h1>
         <p>URLを短縮できるサービスです</p>
         <input type="text" name="a" id="a" />
-        <button type="button" onclick="on()">onclick</button>
+        <button onclick></button>
+        {html`
+          
+        `}
         <p>https://tanlink.deno.dev/?url=短縮したいURL</p>
         <p>https://tanlink.deno.dev/短縮後のキー</p>
       </Layout>,
