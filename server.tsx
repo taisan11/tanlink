@@ -1,5 +1,7 @@
 /** @jsx jsx */
 /** @jsxImportSource hono/jsx */
+/** @jsxFrag Fragment */
+/// <reference lib="deno.unstable" />
 import { Hono } from "hono";
 import { customAlphabet } from "npm:nanoid";
 import {compress} from "hono/compress"
