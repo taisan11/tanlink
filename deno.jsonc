@@ -1,5 +1,8 @@
 {
   "tasks": {
     "run": "deno run -A --unstable-hmr --unstable server.tsx"
+  },
+  "imports": {
+    "hono": "jsr:@hono/hono@^4.6.1"
   }
 }

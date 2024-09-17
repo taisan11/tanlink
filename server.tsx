@@ -1,18 +1,13 @@
-// deno-lint-ignore-file
 /** @jsx jsx */
-/** @jsxFrag Fragment */
-/// <reference lib="deno.unstable" />
-import { Hono } from "https://deno.land/x/hono@v4.0.7/mod.ts";
+/** @jsxImportSource hono/jsx */
+import { Hono } from "hono";
 import { customAlphabet } from "npm:nanoid";
-import {
-  compress,
-  jsx,
-  logger,
-  serveStatic,
-  secureHeaders ,
-  basicAuth ,
-  jsxRenderer
-} from "https://deno.land/x/hono@v4.0.7/middleware.ts";
+import {compress} from "hono/compress"
+import {jsxRenderer} from "hono/jsx-renderer"
+import {basicAuth} from "hono/basic-auth"
+import {secureHeaders} from "hono/secure-headers"
+import {logger} from "hono/logger"
+import {jsx} from "hono/jsx"
 
 const app = new Hono();
 const kv = await Deno.openKv();
@@ -64,7 +59,7 @@ app.get(
   })
 )
 app.get("/", async (c) => {
-  const url: string = c.req.query("url");
+  const url = String(c.req.query("url"));
   if (!url) {
     return c.render(
       <div>
@@ -91,8 +86,8 @@ app.get("/", async (c) => {
   );
 });
 app.get('/auth',async (c) => {
-  const url: string = c.req.query("url");
-  const key: string = c.req.query("key");
+  const url = String(c.req.query("url"));
+  const key = String(c.req.query("key"));
   await kv.set([key], url);
   return c.render(
     <div>
@@ -106,7 +101,7 @@ app.get('/auth',async (c) => {
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
   const aredayo = await kv.get([id]);
-  return c.redirect(aredayo.value);
+  return c.redirect(String(aredayo.value));
   // return c.text(aredayo.value);
 });
 Deno.serve(app.fetch);

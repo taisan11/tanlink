@@ -2,8 +2,14 @@
   "version": "3",
   "packages": {
     "specifiers": {
+      "jsr:@hono/hono@^4.6.1": "jsr:@hono/hono@4.6.1",
       "npm:nanoid": "npm:nanoid@3.1.16",
       "npm:nanoid@3.1.16": "npm:nanoid@3.1.16"
+    },
+    "jsr": {
+      "@hono/hono@4.6.1": {
+        "integrity": "993704e3a2fa8e965c2fa46c57fc038bd277e781a982d3bf0fb278f6671b195f"
+      }
     },
     "npm": {
       "nanoid@3.1.16": {
@@ -176,5 +182,10 @@
     "https://deno.land/x/hono@v4.0.7/utils/url.ts": "d9d307a495e7dfc6e916fbcfa74c2d8d23e8e685bddc5e6ebc9c0f784345a01a",
     "https://deno.land/x/hono@v4.0.7/validator/index.ts": "6c986e8b91dcf857ecc8164a506ae8eea8665792a4ff7215471df669c632ae7c",
     "https://deno.land/x/hono@v4.0.7/validator/validator.ts": "d80db93f84bce6406feac5d157cb97ee69242498d0dbec4568cb5df1a844bf0f"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@hono/hono@^4.6.1"
+    ]
   }
 }
