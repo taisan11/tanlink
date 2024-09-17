@@ -1,5 +1,4 @@
 // deno-lint-ignore-file
-/** @jsx jsx */
 /** @jsxImportSource hono/jsx */
 /// <reference lib="deno.unstable" />
 import { Hono } from "hono";
