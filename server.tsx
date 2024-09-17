@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 /** @jsx jsx */
 /** @jsxImportSource hono/jsx */
 /** @jsxFrag Fragment */
