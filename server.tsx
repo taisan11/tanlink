@@ -60,7 +60,7 @@ app.get(
 )
 app.get("/", async (c) => {
   const url = String(c.req.query("url"));
-  if (!url) {
+  if (url === "undefined") {
     return c.render(
       <div>
         <h1>たんLink</h1>
