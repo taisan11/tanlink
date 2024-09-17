@@ -7,7 +7,6 @@ import {jsxRenderer} from "hono/jsx-renderer"
 import {basicAuth} from "hono/basic-auth"
 import {secureHeaders} from "hono/secure-headers"
 import {logger} from "hono/logger"
-import {jsx} from "hono/jsx"
 
 const app = new Hono();
 const kv = await Deno.openKv();
@@ -102,6 +101,5 @@ app.get("/:id", async (c) => {
   const id = c.req.param("id");
   const aredayo = await kv.get([id]);
   return c.redirect(String(aredayo.value));
-  // return c.text(aredayo.value);
 });
 Deno.serve(app.fetch);
