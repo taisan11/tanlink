@@ -26,7 +26,7 @@ app.use(
 
 async function shorten(url: string) {
   const key = nanoid();
-  await kv.set([key], url);
+  await kv.set(["links",key], url);
   return { key };
 }
 //urlcheck
@@ -87,7 +87,7 @@ app.get("/", async (c) => {
 app.route("/auth",admin)
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
-  const aredayo = await kv.get([id]);
+  const aredayo = await kv.get(["links",id]);
   return c.redirect(String(aredayo.value));
 });
 Deno.serve(app.fetch);
