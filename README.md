@@ -1,3 +1,2 @@
-```
-deno run --allow-net hello.ts
-```
+## V1仕様
+URLは916132832個まで保存可能です。

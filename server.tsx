@@ -1,6 +1,3 @@
-// deno-lint-ignore-file
-/** @jsxImportSource hono/jsx */
-/// <reference lib="deno.unstable" />
 import { Hono } from "hono";
 import { customAlphabet } from "npm:nanoid";
 import {compress} from "hono/compress"
@@ -8,20 +5,22 @@ import {jsxRenderer} from "hono/jsx-renderer"
 import {basicAuth} from "hono/basic-auth"
 import {secureHeaders} from "hono/secure-headers"
 import {logger} from "hono/logger"
+import { admin } from "./admin.tsx";
 
 const app = new Hono();
-const kv = await Deno.openKv();
+export const kv = await Deno.openKv();
+const env = Deno.env
 
-const nanoid = customAlphabet(
+export const nanoid = customAlphabet(
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-  7,
+  5,
 );
 
 app.use(
   '/auth/*',
   basicAuth({
-    username: 'taijn',
-    password: 'njl',
+    username: env.get('USERNAME') || 'admin',
+    password: env.get('PASSWORD') || 'password',
   })
 )
 
@@ -33,7 +32,7 @@ async function shorten(url: string) {
 //urlcheck
 function urlcheck(string: string) {
   try {
-    new URL(string);
+    URL.parse(string);
     return true;
   } catch (err) {
     return false;
@@ -85,19 +84,7 @@ app.get("/", async (c) => {
     </div>,
   );
 });
-app.get('/auth',async (c) => {
-  const url = String(c.req.query("url"));
-  const key = String(c.req.query("key"));
-  await kv.set([key], url);
-  return c.render(
-    <div>
-      <h1>たんLink</h1>
-      <p>短縮URL</p>
-      <a href={`https://tanlink.deno.dev/${key}`} id="a">
-        {`https://tanlink.deno.dev/${key}`}
-      </a>
-    </div>  )
-})
+app.route("/auth",admin)
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
   const aredayo = await kv.get([id]);

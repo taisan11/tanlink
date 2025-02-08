@@ -1,8 +1,13 @@
 {
   "tasks": {
-    "run": "deno run -A --unstable-hmr --unstable server.tsx"
+    "run": "deno run -A --watch --unstable server.tsx"
   },
   "imports": {
-    "hono": "jsr:@hono/hono@^4.6.1"
+    "hono": "jsr:@hono/hono@^4.7.0"
+  },
+  "unstable": ["kv"],
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
   }
 }
