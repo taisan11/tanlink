@@ -84,7 +84,7 @@ app.get("/", async (c) => {
     </div>,
   );
 });
-app.route("/auth",admin)
+app.route("/admin",admin)
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
   const aredayo = await kv.get(["links",id]);
