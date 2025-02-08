@@ -65,7 +65,7 @@ app.get("/", async (c) => {
         <h1>たんLink</h1>
         <p>URLを短縮できるサービスです</p>
         <input type="text" name="a" id="a" />
-        <button onclick></button>
+        <button onclick>Go!!</button>
         <p>https://tanlink.deno.dev/?url=短縮したいURL</p>
         <p>https://tanlink.deno.dev/短縮後のキー</p>
         <p>https://tanlink.deno.dev/auth/?url=aaaa&key=aaaa</p>
