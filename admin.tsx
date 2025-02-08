@@ -35,7 +35,7 @@ app.use(async(c,next)=>{
     } catch (e) {
         return c.redirect("/auth/login");
     }
-    if (!token.UserID) {
+    if (!token.UserID||env.get("USERNAME") !== token.UserID) {
         return c.redirect("/auth/login");
     }
     //更新

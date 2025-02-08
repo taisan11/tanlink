@@ -5,6 +5,7 @@ import {jsxRenderer} from "hono/jsx-renderer"
 import {secureHeaders} from "hono/secure-headers"
 import {logger} from "hono/logger"
 import { admin } from "./admin.tsx";
+import { auth } from "./auth.tsx";
 
 const app = new Hono();
 export const kv = await Deno.openKv();
@@ -76,6 +77,7 @@ app.get("/", async (c) => {
   );
 });
 app.route("/admin",admin)
+app.route("/auth",auth)
 app.get("/:id", async (c) => {
   const id = c.req.param("id");
   const aredayo = await kv.get(["links",id]);
