@@ -8,5 +8,5 @@ export interface urlOption {
 
 export interface User {
     UserID: string;
-    admin: boolean;
+    password:string;
 }

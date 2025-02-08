@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { kv } from "./server.tsx"
+import { kv,env } from "./server.tsx"
 import { jwt,verify,decode,sign } from 'hono/jwt'
 import {getSignedCookie,setSignedCookie} from "hono/cookie"
 import type { JwtVariables } from 'hono/jwt'
@@ -17,7 +17,6 @@ interface Env {
 }
 
 const app = new Hono<Env>()
-const env = Deno.env
 export const jwk = "" 
 
 app.use(async(c,next)=>{
@@ -46,10 +45,6 @@ app.use(async(c,next)=>{
     //保存
     await setSignedCookie(c,SECRET_KEY,"token",await sign(token,SECRET_KEY),{httpOnly:true,sameSite:"Lax",secure:true})
     kv.set(["nowtoken",token.UserID],token)
-    kv.get(["Users",token.UserID]).then((r)=>{
-        const user = r.value as User | null;
-        if (!user || !user.admin) return c.redirect("/auth/login");
-    })
     c.set("payload", token);
     await next()
 })

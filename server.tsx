@@ -2,27 +2,18 @@ import { Hono } from "hono";
 import { customAlphabet } from "npm:nanoid";
 import {compress} from "hono/compress"
 import {jsxRenderer} from "hono/jsx-renderer"
-import {basicAuth} from "hono/basic-auth"
 import {secureHeaders} from "hono/secure-headers"
 import {logger} from "hono/logger"
 import { admin } from "./admin.tsx";
 
 const app = new Hono();
 export const kv = await Deno.openKv();
-const env = Deno.env
+export const env = Deno.env
 
 export const nanoid = customAlphabet(
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
   5,
 );
-
-app.use(
-  '/auth/*',
-  basicAuth({
-    username: env.get('USERNAME') || 'admin',
-    password: env.get('PASSWORD') || 'password',
-  })
-)
 
 async function shorten(url: string) {
   const key = nanoid();
