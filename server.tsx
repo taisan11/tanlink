@@ -33,7 +33,7 @@ export function urlcheck(string: string) {
   try {
     new URL(string);
     return true;
-  } catch (err) {
+  } catch (_) {
     return false;
   }
 }

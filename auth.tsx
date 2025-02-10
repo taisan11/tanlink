@@ -1,8 +1,9 @@
 import { Hono } from "hono";
 import { kv,env } from "./server.tsx"
-import { jwt,verify,decode,sign } from 'hono/jwt'
-import {getSignedCookie,setSignedCookie} from "hono/cookie"
+import { verify,sign } from 'hono/jwt'
+import {getSignedCookie,setSignedCookie,deleteCookie} from "hono/cookie"
 import { User } from "./kv_types.ts";
+import type {UserToken} from "./admin.tsx"
 
 const app = new Hono();
 
@@ -45,6 +46,44 @@ app.post("/login", async (c) => {
         return c.redirect("/");
     }
     return c.redirect("/auth/login?e=1");
+})
+
+app.get("/logout", (c) => {
+    return c.render(
+        <div>
+            <h1>たんりんくLogout</h1>
+            <p>ホンマにログアウトするんか?</p>
+            <form method="post">
+                <button type="submit">ログアウト</button>
+            </form>
+        </div>
+    )
+})
+
+app.post("/logout", async (c) => {
+    const SECRET_KEY = env.get("SECRET_KEY")!;
+    const base_token = await getSignedCookie(c,SECRET_KEY,"token")
+    if (!base_token) {
+        console.error("トークンがありません")
+        return c.redirect("/auth/login")
+    }
+    let token: UserToken;
+    try {
+        token = await verify(base_token, SECRET_KEY) as UserToken;
+        kv.get(["nowtoken",token.UserID]).then((r)=>{
+            if(r.value !== base_token) return c.redirect("/auth/login")
+        })
+    } catch (e) {
+        console.error(e)
+        return c.redirect("/auth/login");
+    }
+    if (!token.UserID||env.get("USERNAME") !== token.UserID) {
+        console.error("ユーザーIDが一致しません")
+        return c.redirect("/auth/login");
+    }
+    await kv.delete(["nowtoken",token.UserID])
+    await deleteCookie(c,"token")
+    return c.redirect("/auth/login")
 })
 
 export const auth = app

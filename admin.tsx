@@ -1,13 +1,11 @@
 import { Hono } from "hono"
 import { kv,env } from "./server.tsx"
-import { jwt,verify,decode,sign } from 'hono/jwt'
+import { verify,sign } from 'hono/jwt'
 import {getSignedCookie,setSignedCookie} from "hono/cookie"
-import type { JwtVariables } from 'hono/jwt'
-import type {HonoJsonWebKey, JWTPayload} from "hono/utils/jwt/types"
-import {User} from "./kv_types.ts"
+import type {JWTPayload} from "hono/utils/jwt/types"
 import {urlcheck} from "./server.tsx"
 
-interface UserToken extends JWTPayload {
+export interface UserToken extends JWTPayload {
     UserID: string;
 }
 
@@ -85,12 +83,12 @@ app.get('/', async (c) => {
             </a>
         </div>)
 })
-app.get("/deleteKeys", async (c) => {
-    const entries = kv.list({ prefix: [] });
-    for await (const entry of entries) {
-        kv.delete(entry.key);
-    }
-    return c.text("完了!!")
-})
+// app.get("/deleteKeys", async (c) => {
+//     const entries = kv.list({ prefix: [] });
+//     for await (const entry of entries) {
+//         kv.delete(entry.key);
+//     }
+//     return c.text("完了!!")
+// })
 
 export const admin = app
