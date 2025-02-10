@@ -83,6 +83,30 @@ app.get('/', async (c) => {
             </a>
         </div>)
 })
+
+app.get("/createUser", (c) => {
+    return c.render(<>
+        <h1>新しいUserを作成してみよう!!</h1>
+        <form method="post">
+            <input type="text" name="username" placeholder="username" />
+            <input type="password" name="password" placeholder="password" />
+            <button type="submit">作成</button>
+        </form>
+    </>)
+})
+
+app.post("/createUser", async (c) => {
+    const body = await c.req.formData();
+    const username = body.get("username") as string;
+    const password = body.get("password") as string;
+    if (!username || !password) {
+        return c.text("入力してください");
+    }
+    await kv.set(["users", username], password);
+    return c.text("作成しました");
+})
+
+//ふういん!!
 // app.get("/deleteKeys", async (c) => {
 //     const entries = kv.list({ prefix: [] });
 //     for await (const entry of entries) {
