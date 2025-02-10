@@ -86,6 +86,7 @@ app.get("/deleteKeys", async (c) => {
     for await (const entry of entries) {
         kv.delete(entry.key);
     }
+    return c.text("完了!!")
 })
 
 export const admin = app
