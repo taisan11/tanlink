@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "run": "deno run -A --watch --unstable server.tsx"
+    "run": "deno run -A --watch --env server.tsx"
   },
   "imports": {
     "hono": "jsr:@hono/hono@^4.7.0"

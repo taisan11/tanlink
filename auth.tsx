@@ -32,7 +32,7 @@ app.post("/login", async (c) => {
         const SECRET_KEY = env.get("SECRET_KEY")!;
         const token = await sign({ UserID: adminUsername }, SECRET_KEY);
         await kv.set(["nowtoken", adminUsername], token);
-        await setSignedCookie(c, SECRET_KEY, "token", token, { httpOnly: true, sameSite: "Lax", secure: true });
+        await setSignedCookie(c, "token", token,SECRET_KEY, { httpOnly: true, sameSite: "Lax", secure: true});
         return c.redirect("/");
     }
     //user用
@@ -41,7 +41,7 @@ app.post("/login", async (c) => {
     if (username === user!.UserID && password === user!.password) {
         const SECRET_KEY = env.get("SECRET_KEY")!;
         const token = await sign({ UserID: username }, SECRET_KEY);
-        await setSignedCookie(c, SECRET_KEY, "token", token, { httpOnly: true, sameSite: "Lax", secure: true });
+        await setSignedCookie(c, "token", token,SECRET_KEY, { httpOnly: true, sameSite: "Lax", secure: true,prefix:"secure" });
         return c.redirect("/");
     }
     return c.redirect("/auth/login?e=1");

@@ -5,6 +5,7 @@ import {getSignedCookie,setSignedCookie} from "hono/cookie"
 import type { JwtVariables } from 'hono/jwt'
 import type {HonoJsonWebKey, JWTPayload} from "hono/utils/jwt/types"
 import {User} from "./kv_types.ts"
+import {urlcheck} from "./server.tsx"
 
 interface UserToken extends JWTPayload {
     UserID: string;
@@ -22,8 +23,9 @@ export const jwk = ""
 app.use(async(c,next)=>{
     //取得.認証
     const SECRET_KEY = env.get("SECRET_KEY")!
-    const base_token = await getSignedCookie(c,SECRET_KEY,"token","secure")
+    const base_token = await getSignedCookie(c,SECRET_KEY,"token")
     if (!base_token) {
+        console.error("トークンがありません")
         return c.redirect("/auth/login")
     }
     let token: UserToken;
@@ -33,9 +35,11 @@ app.use(async(c,next)=>{
             if(r.value !== base_token) return c.redirect("/auth/login")
         })
     } catch (e) {
+        console.error(e)
         return c.redirect("/auth/login");
     }
     if (!token.UserID||env.get("USERNAME") !== token.UserID) {
+        console.error("ユーザーIDが一致しません")
         return c.redirect("/auth/login");
     }
     //更新
@@ -43,15 +47,30 @@ app.use(async(c,next)=>{
     token.iat = Math.floor(Date.now() / 1000);
     token.nbf = Math.floor(Date.now() / 1000);
     //保存
-    await setSignedCookie(c,SECRET_KEY,"token",await sign(token,SECRET_KEY),{httpOnly:true,sameSite:"Lax",secure:true})
-    kv.set(["nowtoken",token.UserID],token)
+    const new_base_token = await sign(token,SECRET_KEY)
+    await setSignedCookie(c,"token",new_base_token,SECRET_KEY,{httpOnly:true,sameSite:"Lax",secure:true})
+    kv.set(["nowtoken",token.UserID],new_base_token)
     c.set("payload", token);
     await next()
 })
 
 app.get('/', async (c) => {
-    const url = String(c.req.query("url"));
-    const key = String(c.req.query("key"));
+    const url = c.req.query("url");
+    const key = c.req.query("key");
+    if (!url||!key) {
+        return c.render(
+            <div>
+                <h1>たんLink</h1>
+                <p>短縮URL</p>
+                <form method="get">
+                    <input type="text" name="url" placeholder="URL" />
+                    <input type="text" name="key" placeholder="key" />
+                    <button type="submit">短縮</button>
+                </form>
+            </div>
+        )
+    }
+    if (!urlcheck) return c.text("URLじゃありませんよっ!!")
     await kv.set(["links",key], url);
     return c.render(
         <div>
