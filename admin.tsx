@@ -30,7 +30,7 @@ app.use(async(c,next)=>{
     try {
         token = await verify(base_token, SECRET_KEY) as UserToken;
         kv.get(["nowtoken",token.UserID]).then((r)=>{
-            if(r.value !== token) return c.redirect("/auth/login")
+            if(r.value !== base_token) return c.redirect("/auth/login")
         })
     } catch (e) {
         return c.redirect("/auth/login");

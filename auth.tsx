@@ -31,6 +31,7 @@ app.post("/login", async (c) => {
     if (username === adminUsername && password === adminPassword) {
         const SECRET_KEY = env.get("SECRET_KEY")!;
         const token = await sign({ UserID: adminUsername }, SECRET_KEY);
+        await kv.set(["nowtoken", adminUsername], token);
         await setSignedCookie(c, SECRET_KEY, "token", token, { httpOnly: true, sameSite: "Lax", secure: true });
         return c.redirect("/");
     }
