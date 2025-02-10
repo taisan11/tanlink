@@ -67,6 +67,10 @@ app.get('/', async (c) => {
                     <input type="text" name="key" placeholder="key" />
                     <button type="submit">短縮</button>
                 </form>
+                <h2>お知らせ</h2>
+                <h3>2024-2-10</h3>
+                <p>メンテナンスのため今までの短縮されたリンクをすべて削除されました。</p>
+                <p>これ以降は削除されない予定ですので安心してご利用ください。</p>
             </div>
         )
     }
