@@ -35,7 +35,7 @@ app.use(async(c,next)=>{
         console.error(e)
         return c.redirect("/auth/login");
     }
-    if (!token.UserID||env.get("USERNAME") !== token.UserID) {
+    if (!token.UserID||env.get("USER_NAME") !== token.UserID) {
         console.error("ユーザーIDが一致しません")
         return c.redirect("/auth/login");
     }
@@ -60,8 +60,9 @@ app.get('/', async (c) => {
                 <h1>たんLink</h1>
                 <p>短縮URL</p>
                 <form method="get">
-                    <input type="text" name="url" placeholder="URL" />
-                    <input type="text" name="key" placeholder="key" />
+                    <input type="text" name="url" placeholder="URL" required/>
+                    <input type="text" name="key" placeholder="key" required/>
+                    <input type="text" name="ip" placeholder="IP規制"/>
                     <button type="submit">短縮</button>
                 </form>
                 <h2>お知らせ</h2>
@@ -71,8 +72,9 @@ app.get('/', async (c) => {
             </div>
         )
     }
-    if (!urlcheck) return c.text("URLじゃありませんよっ!!")
+    if (!urlcheck(url)) return c.text("URLじゃありませんよっ!!")
     await kv.set(["links",key], url);
+    await kv.set(["links",key,"ip"], c.req.query("ip"));
     return c.render(
         <div>
             <h1>たんLink</h1>

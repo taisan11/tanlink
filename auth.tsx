@@ -27,7 +27,7 @@ app.post("/login", async (c) => {
     const username = body.get("username");
     const password = body.get("password");
     //admin用
-    const adminUsername = env.get('USERNAME') || 'admin';
+    const adminUsername = env.get('USER_NAME') || 'admin';
     const adminPassword = env.get('PASSWORD') || 'password';
     if (username === adminUsername && password === adminPassword) {
         const SECRET_KEY = env.get("SECRET_KEY")!;
@@ -77,7 +77,7 @@ app.post("/logout", async (c) => {
         console.error(e)
         return c.redirect("/auth/login");
     }
-    if (!token.UserID||env.get("USERNAME") !== token.UserID) {
+    if (!token.UserID||env.get("USER_NAME") !== token.UserID) {
         console.error("ユーザーIDが一致しません")
         return c.redirect("/auth/login");
     }

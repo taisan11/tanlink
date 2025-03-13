@@ -8,6 +8,7 @@ import { admin } from "./admin.tsx";
 import { auth } from "./auth.tsx";
 import { showRoutes } from "hono/dev";
 import { HonoJsonWebKey } from "hono/utils/jwt/types";
+import { getConnInfo } from "hono/deno";
 
 const app = new Hono();
 export const kv = await Deno.openKv();
@@ -21,7 +22,7 @@ export const SECRET:string|HonoJsonWebKey = (() => {
 })();
 
 //環境変数チェック!!
-if (!env.has("SECRET_KEY")||!env.has("USERNAME")||!env.has("PASSWORD")) {
+if (!env.has("SECRET_KEY")||!env.has("USER_NAME")||!env.has("PASSWORD")) {
   console.error("なんかしらの環境変数がないので終了します");
   Deno.exit(1);
 }
@@ -72,6 +73,10 @@ app.get("/", async (c) => {
         </form>
         <p>https://{c.req.header("Host")}/?url=短縮したいURL</p>
         <p>https://{c.req.header("Host")}/短縮後のキー</p>
+        <h2>お知らせ</h2>
+        <h3>2024-2-10</h3>
+        <p>メンテナンスのため今までの短縮されたリンクをすべて削除されました。</p>
+        <p>これ以降は削除されない予定ですので安心してご利用ください。</p>
       </div>
     );
   }
@@ -92,8 +97,15 @@ app.route("/auth",auth)
 app.get("/:id{[0-9A-Za-z]{5}}", async (c) => {
   const id = c.req.param("id");
   const aredayo = await kv.get(["links", id]);
+  const ip = kv.get(["links", id, "ip"]);
   if (!aredayo.value) {
     return c.text("URLが見つかりません", 404);
+  }
+  if (await ip) {
+    const ipcheck = getConnInfo(c).remote.address;
+    if (ipcheck !== String(await ip)) {
+      return c.text("IPが違います", 403);
+    }
   }
   return c.redirect(String(aredayo.value));
 });
