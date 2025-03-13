@@ -23,8 +23,7 @@ export const SECRET:string|HonoJsonWebKey = (() => {
 
 //環境変数チェック!!
 if (!env.has("SECRET_KEY")||!env.has("USER_NAME")||!env.has("PASSWORD")) {
-  console.error("なんかしらの環境変数がないので終了します");
-  Deno.exit(1);
+  console.error("なんかしらの環境変数がない");
 }
 
 export const nanoid = customAlphabet(
