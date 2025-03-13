@@ -96,10 +96,10 @@ app.route("/auth",auth)
 app.get("/:id{[0-9A-Za-z]{5}}", async (c) => {
   const id = c.req.param("id");
   const aredayo = await kv.get(["links", id]);
-  const ip = kv.get(["links", id, "ip"]);
   if (!aredayo.value) {
-    return c.text("URLが見つかりません", 404);
+    return c.notFound()
   }
+  const ip = kv.get(["links", id, "ip"]);
   if (await ip) {
     const ipcheck = getConnInfo(c).remote.address;
     if (ipcheck !== String(await ip)) {
