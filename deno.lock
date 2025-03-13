@@ -1,13 +1,13 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@hono/hono@^4.7.0": "4.7.0",
+    "jsr:@hono/hono@^4.7.4": "4.7.4",
     "npm:nanoid@*": "3.1.16",
     "npm:nanoid@3.1.16": "3.1.16"
   },
   "jsr": {
-    "@hono/hono@4.7.0": {
-      "integrity": "1eb10e1976d3dda22ab43115ecfa348a43cd17c8aea5c0039c9757ebded624f8"
+    "@hono/hono@4.7.4": {
+      "integrity": "c03c9cbe0fbfc4e51f3fee6502a7903aa4f9ef7c2c98635607b15eee14258825"
     }
   },
   "npm": {
@@ -182,7 +182,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@hono/hono@^4.7.0"
+      "jsr:@hono/hono@^4.7.4"
     ]
   }
 }

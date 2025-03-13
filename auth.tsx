@@ -82,7 +82,7 @@ app.post("/logout", async (c) => {
         return c.redirect("/auth/login");
     }
     await kv.delete(["nowtoken",token.UserID])
-    await deleteCookie(c,"token")
+    deleteCookie(c,"token")
     return c.redirect("/auth/login")
 })
 

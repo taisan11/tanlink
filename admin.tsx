@@ -16,7 +16,6 @@ interface Env {
 }
 
 const app = new Hono<Env>()
-export const jwk = "" 
 
 app.use(async(c,next)=>{
     //取得.認証

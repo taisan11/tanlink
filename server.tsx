@@ -7,10 +7,18 @@ import {logger} from "hono/logger"
 import { admin } from "./admin.tsx";
 import { auth } from "./auth.tsx";
 import { showRoutes } from "hono/dev";
+import { HonoJsonWebKey } from "hono/utils/jwt/types";
 
 const app = new Hono();
 export const kv = await Deno.openKv();
 export const env = Deno.env
+export const SECRET:string|HonoJsonWebKey = (() => {
+  try {
+    return JSON.parse(env.get("SECRET_KEY")!);
+  } catch (_e) {
+    env.get("SECRET_KEY")
+  }
+})();
 
 //環境変数チェック!!
 if (!env.has("SECRET_KEY")||!env.has("USERNAME")||!env.has("PASSWORD")) {
@@ -30,12 +38,7 @@ async function shorten(url: string) {
 }
 //urlcheck
 export function urlcheck(string: string) {
-  try {
-    new URL(string);
-    return true;
-  } catch (_) {
-    return false;
-  }
+  return URL.canParse(string);
 }
 
 app.use('*', secureHeaders())
@@ -63,11 +66,12 @@ app.get("/", async (c) => {
       <div>
         <h1>たんLink</h1>
         <p>URLを短縮できるサービスです</p>
-        <input type="text" name="a" id="a" />
-        <button onclick>Go!!</button>
-        <p>https://tanlink.deno.dev/?url=短縮したいURL</p>
-        <p>https://tanlink.deno.dev/短縮後のキー</p>
-        <p>https://tanlink.deno.dev/auth/?url=aaaa&key=aaaa</p>
+        <form action="/" method="get">
+          <input type="text" name="url" />
+          <input type="submit" value="短縮!!" />
+        </form>
+        <p>https://{c.req.header("Host")}/?url=短縮したいURL</p>
+        <p>https://{c.req.header("Host")}/短縮後のキー</p>
       </div>
     );
   }
@@ -77,8 +81,8 @@ app.get("/", async (c) => {
     <div>
       <h1>たんLink</h1>
       <p>短縮URL</p>
-      <a href={`https://tanlink.deno.dev/${key}`} id="a">
-        {`https://tanlink.deno.dev/${key}`}
+      <a href={`https://${c.req.header("Host")}/${key}`} id="a">
+        {`https://${c.req.header("Host")}/${key}`}
       </a>
     </div>,
   );
