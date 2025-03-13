@@ -100,10 +100,10 @@ app.get("/:id{[0-9A-Za-z]+}", async (c) => {
     return c.notFound()
   }
   const ip = kv.get(["links", id, "ip"]);
-  if (await ip) {
+  if ((await ip).value) {
     const ipcheck = getConnInfo(c).remote.address;
-    if (ipcheck !== String(await ip)) {
-      return c.text(`IPが違います\n${ipcheck}\n${String(await ip)}`, 403);
+    if (ipcheck !== (await ip).value) {
+      return c.text(`IPが違います\n${ipcheck}`, 403);
     }
   }
   return c.redirect(String(aredayo.value));
