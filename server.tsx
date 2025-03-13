@@ -103,7 +103,7 @@ app.get("/:id{[0-9A-Za-z]+}", async (c) => {
   if (await ip) {
     const ipcheck = getConnInfo(c).remote.address;
     if (ipcheck !== String(await ip)) {
-      return c.text(`IPが違います\n${ipcheck}`, 403);
+      return c.text(`IPが違います\n${ipcheck}\n${String(await ip)}`, 403);
     }
   }
   return c.redirect(String(aredayo.value));
