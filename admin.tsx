@@ -60,7 +60,7 @@ app.get('/', async (c) => {
                 <h1>たんLink</h1>
                 <p>短縮URL</p>
                 <form method="get">
-                    <input type="text" name="url" placeholder="URL" required/>
+                    <input type="text" name="url" placeholder="URL"/>
                     <input type="text" name="key" placeholder="key" required/>
                     <input type="text" name="ip" placeholder="IP規制"/>
                     <button type="submit">短縮</button>
@@ -72,7 +72,7 @@ app.get('/', async (c) => {
             </div>
         )
     }
-    if (!urlcheck(url)) return c.text("URLじゃありませんよっ!!")
+    //if (!urlcheck(url)) return c.text("URLじゃありませんよっ!!")
     await kv.set(["links",key], url);
     await kv.set(["links",key,"ip"], c.req.query("ip"));
     return c.render(
