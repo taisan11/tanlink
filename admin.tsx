@@ -17,6 +17,7 @@ interface Env {
 
 const app = new Hono<Env>()
 
+// 管理者専用ミドルウェア
 app.use(async(c,next)=>{
     //取得.認証
     const SECRET_KEY = env.get("SECRET_KEY")!
@@ -28,9 +29,11 @@ app.use(async(c,next)=>{
     let token: UserToken;
     try {
         token = await verify(base_token, SECRET_KEY) as UserToken;
-        kv.get(["nowtoken",token.UserID]).then((r)=>{
-            if(r.value !== base_token) return c.redirect("/auth/login")
-        })
+        const now = await kv.get(["nowtoken", token.UserID]);
+        if(!now.value || now.value !== base_token){
+            console.error("不正/期限切れトークン")
+            return c.redirect("/auth/login")
+        }
     } catch (e) {
         console.error(e)
         return c.redirect("/auth/login");
@@ -73,8 +76,13 @@ app.get('/', async (c) => {
         )
     }
     if (!urlcheck(url)) return c.text("URLじゃありませんよっ!!")
+    // オプション: IP 制限 (IPv4/IPv6 簡易バリデーション)
+    const ip = c.req.query("ip");
+    const ipRegex = /^(?:\d{1,3}(?:\.\d{1,3}){3}|[a-fA-F0-9:]+)$/;
     await kv.set(["links",key], url);
-    await kv.set(["links",key,"ip"], c.req.query("ip"));
+    if(ip && ipRegex.test(ip)){
+        await kv.set(["links",key,"ip"], ip);
+    }
     return c.render(
         <div>
             <h1>たんLink</h1>
@@ -96,14 +104,31 @@ app.get("/createUser", (c) => {
     </>)
 })
 
+// ユーザー作成 (管理者のみ)
 app.post("/createUser", async (c) => {
     const body = await c.req.formData();
-    const username = body.get("username") as string;
-    const password = body.get("password") as string;
+    const username = (body.get("username") as string || "").trim();
+    const password = body.get("password") as string || "";
     if (!username || !password) {
-        return c.text("入力してください");
+        return c.text("入力してください", 400);
     }
-    await kv.set(["users", username], password);
+    if(!/^[A-Za-z0-9_]{3,32}$/.test(username)){
+        return c.text("ユーザー名は英数字と _ の 3-32 文字",400)
+    }
+    if(password.length < 8){
+        return c.text("パスワードは8文字以上",400)
+    }
+    // 既存確認
+    const exists = await kv.get(["users", username]);
+    if(exists.value){
+        return c.text("既に存在します",409)
+    }
+    const saltBytes = crypto.getRandomValues(new Uint8Array(16));
+    const saltHex = Array.from(saltBytes).map(b=>b.toString(16).padStart(2,"0")).join("");
+    const enc = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", enc.encode(saltHex + password));
+    const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b=>b.toString(16).padStart(2,"0")).join("");
+    await kv.set(["users", username], {UserID: username, passwordHash: hashHex, salt: saltHex});
     return c.text("作成しました");
 })
 

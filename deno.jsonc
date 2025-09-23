@@ -3,7 +3,8 @@
     "dev": "deno run -A --watch-hmr --env server.tsx"
   },
   "imports": {
-    "hono": "jsr:@hono/hono@^4.7.4"
+    "hono": "jsr:@hono/hono@^4.9.8",
+    "nanoid": "npm:nanoid@^5.1.6"
   },
   "unstable": ["kv"],
   "compilerOptions": {

@@ -1,18 +1,24 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
-    "jsr:@hono/hono@^4.7.4": "4.7.4",
+    "jsr:@hono/hono@^4.9.8": "4.9.8",
     "npm:nanoid@*": "3.1.16",
-    "npm:nanoid@3.1.16": "3.1.16"
+    "npm:nanoid@3.1.16": "3.1.16",
+    "npm:nanoid@^5.1.6": "5.1.6"
   },
   "jsr": {
-    "@hono/hono@4.7.4": {
-      "integrity": "c03c9cbe0fbfc4e51f3fee6502a7903aa4f9ef7c2c98635607b15eee14258825"
+    "@hono/hono@4.9.8": {
+      "integrity": "908150f13e90181a051a3af3bf15203aff00190682afedfd38824d0cb9299a95"
     }
   },
   "npm": {
     "nanoid@3.1.16": {
-      "integrity": "sha512-+AK8MN0WHji40lj8AEuwLOvLSbWYApQpre/aFJZD71r43wVRLrOYS4FmJOPQYon1TqB462RzrrxlfA74XRES8w=="
+      "integrity": "sha512-+AK8MN0WHji40lj8AEuwLOvLSbWYApQpre/aFJZD71r43wVRLrOYS4FmJOPQYon1TqB462RzrrxlfA74XRES8w==",
+      "bin": true
+    },
+    "nanoid@5.1.6": {
+      "integrity": "sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==",
+      "bin": true
     }
   },
   "redirects": {
@@ -182,7 +188,8 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@hono/hono@^4.7.4"
+      "jsr:@hono/hono@^4.9.8",
+      "npm:nanoid@^5.1.6"
     ]
   }
 }

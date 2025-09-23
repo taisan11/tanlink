@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { customAlphabet } from "npm:nanoid";
+import { customAlphabet } from "nanoid";
 import {compress} from "hono/compress"
 import {jsxRenderer} from "hono/jsx-renderer"
 import {secureHeaders} from "hono/secure-headers"
@@ -9,15 +9,19 @@ import { auth } from "./auth.tsx";
 import { showRoutes } from "hono/dev";
 import { HonoJsonWebKey } from "hono/utils/jwt/types";
 import { getConnInfo } from "hono/deno";
+import { cache } from "hono/cache";
+import { etag } from "hono/etag";
 
 const app = new Hono();
 export const kv = await Deno.openKv();
 export const env = Deno.env
-export const SECRET:string|HonoJsonWebKey = (() => {
+export const SECRET: string | HonoJsonWebKey = (() => {
+  const raw = env.get("SECRET_KEY");
+  if (!raw) return ""; // 後続で未設定チェック済
   try {
-    return JSON.parse(env.get("SECRET_KEY")!);
+    return JSON.parse(raw);
   } catch (_e) {
-    env.get("SECRET_KEY")
+    return raw; // JSON でなければそのまま利用
   }
 })();
 
@@ -38,11 +42,24 @@ async function shorten(url: string) {
 }
 //urlcheck
 export function urlcheck(string: string) {
-  return URL.canParse(string);
+  if (!URL.canParse(string)) return false;
+  try {
+    const u = new URL(string);
+    // javascript: や data: などを拒否し http(s) のみに制限
+    return ["http:", "https:"].includes(u.protocol);
+  } catch (_e) {
+    return false;
+  }
 }
 
 app.use('*', secureHeaders())
 app.use("*", compress({ encoding: "gzip" }));
+app.use("*", cache({
+  cacheName: "hono-cache",
+  cacheControl: "public, max-age=3600", // 1時間キャッシュ
+  vary: "Accept-Encoding", // エンコーディングごとにキャッシュを分ける
+}));
+app.use("*", etag());
 app.use("*", logger());
 app.get(
   '*',
