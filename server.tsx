@@ -123,6 +123,13 @@ app.get("/:id{[0-9A-Za-z]+}", async (c) => {
       return c.text(`IPが違います\n${ipcheck}`, 403);
     }
   }
+  if (aredayo.value==="kari") {
+    return c.render(<>
+      <h1>仮ページ</h1>
+      <p>このページは仮ページです。</p>
+      <p>いつかURLが設定されるかもしれません。</p>
+    </>)
+  }
   return c.redirect(String(aredayo.value));
 });
 showRoutes(app, {})
