@@ -66,7 +66,7 @@ function safeHost(raw?: string | null): string {
   return raw;
 }
 
-app.use("*", secureHeaders());
+// app.use("*", secureHeaders());
 app.use("*", compress({ encoding: "gzip" }));
 app.use(
   "*",
